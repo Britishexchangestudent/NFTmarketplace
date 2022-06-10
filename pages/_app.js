@@ -1,7 +1,19 @@
-import '../styles/globals.css'
+import { ThemeProvider } from 'next-themes';
+import Script from 'next/script';
+import { Navbar, Footer } from '../components';
 
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
-}
+import '../styles/globals.css';
 
-export default MyApp
+const MyApp = ({ Component, pageProps }) => (
+  <ThemeProvider attribute="class">
+    <div className="dark:bg-nft-dark bg-white min-h-screen duration-300">
+      <Navbar />
+      <Component {...pageProps} />
+      <Footer />
+    </div>
+
+    <Script src="https://kit.fontawesome.com/8f8612c6e0.js" crossorigin="anonymous" />
+  </ThemeProvider>
+);
+
+export default MyApp;

@@ -9,6 +9,10 @@
    background: linear-gradient(101.12deg, #EB1484 27.35%, #C91CC3 99.99%, #C81CC5 100%, #C81CC5 100%);
 }
 
+.transitional {
+    transition: transform 0.3s ease-in;
+}
+
 .white-bg {
     background: rgba(255, 255, 255, 0.2);
 }
