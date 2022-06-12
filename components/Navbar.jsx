@@ -72,7 +72,9 @@ const Navbar = () => {
   const router = useRouter();
 
   return (
-    <nav className="flexBetween w-full fixed z-10 p-4 flex-row border-b dark:bg-nft-dark bg-white dark:border-nft-black-1 border-nft-gray-1  duration-300">
+    <nav
+      className="flexBetween w-full fixed z-10 p-4 flex-row border-b dark:bg-nft-dark bg-white dark:border-nft-black-1 border-nft-gray-1   duration-300"
+    >
 
       {/* LOGO */}
       <div className="flex flex-1 flex-row justify-start">

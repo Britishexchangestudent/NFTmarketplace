@@ -4,7 +4,9 @@ import React from 'react';
 import images from '../assets';
 
 const CreatorCard = ({ rank, creatorImage, creatorName, creatorEths }) => (
-  <div className="min-w-190 minlg:min-w-240 dark:bg-nft-black-3 bg-white shadow-lg  rounded-3xl flex flex-col p-4 m-4">
+  <div
+    className="min-w-190 minlg:min-w-240 dark:bg-nft-black-3 bg-white shadow-lg  rounded-3xl flex flex-col p-4 m-4 cursor-pointer"
+  >
     <div className="w-8 h-8 minmd:w-10 minmd:h-10 bg-nft-red-violet shadow-lg flexCenter rounded-full">
       <p className="font-poppins text-white font-semibold text-base minlg:text-lg">{rank}</p>
     </div>

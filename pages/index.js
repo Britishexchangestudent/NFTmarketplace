@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
+import { motion } from 'framer-motion';
 import { Banner, CreatorCard, NFTCard } from '../components';
 import images from '../assets';
 import { makeId } from '../utils/makeId';
@@ -61,6 +62,7 @@ const Home = () => {
           <div className="relative flex-1 max-w-full flex mt-3" ref={parentRef}>
             <div className="flex flex-row w-max overflow-x-scroll no-scrollbar select-none" ref={scrollRef}>
               {[6, 7, 8, 9, 10].map((i) => (
+
                 <CreatorCard
                   key={`creator-${i}`}
                   rank={i}
@@ -68,6 +70,7 @@ const Home = () => {
                   creatorName={`0x${makeId(3)}...${makeId(4)}`}
                   creatorEths={10 - i * 0.5}
                 />
+
               ))}
               {!hideButtons && (
 
