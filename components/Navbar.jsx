@@ -8,6 +8,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import images from '../assets';
 import { Button } from '.';
+import { NFTContext } from '../context/NFTContext';
 
 const MenuItems = ({ isMobile, active, setActive }) => {
   const generateLink = (i) => {
@@ -26,7 +27,7 @@ const MenuItems = ({ isMobile, active, setActive }) => {
     }
   };
   return (
-    <ul className={`list-none flexCenter flex-row ${isMobile && 'flex-col h-full'}`}>
+    <ul className={`list-none flexCenter flex-row ${isMobile ? 'flex-col h-full' : ''}`}>
       {['Explore NFTs', 'Listed NFTs', 'My NFTs'].map((item, i) => (
         <li
           key={i}
@@ -45,9 +46,12 @@ const MenuItems = ({ isMobile, active, setActive }) => {
 };
 
 const ButtonGroup = ({ setActive, router }) => {
+  const { connectWallet, currentAccount } = useContext(NFTContext);
   const hasConnected = true;
 
-  return hasConnected ? (
+  console.log('currentAccount213123', currentAccount);
+
+  return currentAccount ? (
     <Button
       btnName="Create"
       classStyles="mx-2 rounded-xl"
@@ -60,7 +64,7 @@ const ButtonGroup = ({ setActive, router }) => {
     <Button
       btnName="Connect"
       classStyles="mx-2 rounded-xl"
-      handleClick={() => {}}
+      handleClick={connectWallet}
     />
   );
 };
@@ -120,7 +124,7 @@ const Navbar = () => {
             height={20}
             alt="close"
             onClick={() => setIsOpen(false)}
-            className={theme === 'light' && 'filter invert'}
+            className={theme === 'light' ? 'filter invert' : ''}
           />
         ) : (
           <Image
@@ -130,7 +134,7 @@ const Navbar = () => {
             height={25}
             alt="menu"
             onClick={() => setIsOpen(true)}
-            className={theme === 'light' && 'filter invert'}
+            className={theme === 'light' ? 'filter invert' : ''}
           />
         )}
 

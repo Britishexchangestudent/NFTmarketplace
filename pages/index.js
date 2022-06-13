@@ -1,17 +1,27 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import { motion } from 'framer-motion';
 import { Banner, CreatorCard, NFTCard } from '../components';
 import images from '../assets';
 import { makeId } from '../utils/makeId';
+import { NFTContext } from '../context/NFTContext';
 
 const Home = () => {
   const [hideButtons, setHideButtons] = useState(false);
+  const [nfts, setNfts] = useState([]);
   const parentRef = useRef(null);
   const scrollRef = useRef(null);
   const { theme } = useTheme();
+
+  const { fetchNFTs } = useContext(NFTContext);
+
+  useEffect(() => {
+    fetchNFTs().then((items) => {
+      setNfts(items);
+    });
+  }, []);
 
   const handleScroll = (direction) => {
     const { current } = scrollRef;
@@ -76,10 +86,10 @@ const Home = () => {
 
               <>
                 <div className="absolute w-8 h-8 minlg:w-12 minlg:h-12 top-45 cursor-pointer left-0" onClick={() => handleScroll('left')}>
-                  <Image src={images.left} layout="fill" objectFit="contain" alt="left_arrow" className={theme === 'light' && 'filter invert'} />
+                  <Image src={images.left} layout="fill" objectFit="contain" alt="left_arrow" className={theme === 'light' ? 'filter invert' : ''} />
                 </div>
                 <div className="absolute w-8 h-8 minlg:w-12 minlg:h-12 top-45 cursor-pointer right-0" onClick={() => handleScroll('right')}>
-                  <Image src={images.right} layout="fill" objectFit="contain" alt="right_arrow" className={theme === 'light' && 'filter invert'} />
+                  <Image src={images.right} layout="fill" objectFit="contain" alt="right_arrow" className={theme === 'light' ? 'filter invert' : ''} />
                 </div>
               </>
               )}
@@ -93,6 +103,7 @@ const Home = () => {
             <div>SearchBar</div>
           </div>
           <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center h-auto">
+            {nfts.map((nft) => <NFTCard key={nft.tokenId} nft={nft} />)}
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
               <NFTCard
                 key={i}

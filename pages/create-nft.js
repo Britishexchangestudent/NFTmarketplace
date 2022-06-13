@@ -7,6 +7,7 @@ import { useDropzone } from 'react-dropzone';
 import { Button, Input } from '../components';
 
 import images from '../assets';
+import { NFTContext } from '../context/NFTContext';
 
 const CreateNFT = () => {
   const [fileUrl, setFileUrl] = useState(null);
@@ -16,9 +17,17 @@ const CreateNFT = () => {
     description: '',
   });
   const { theme } = useTheme();
+  const router = useRouter();
 
-  const onDrop = useCallback(() => {
+  const { uploadToIPFS, createNFT } = useContext(NFTContext);
+
+  const onDrop = useCallback(async (acceptedFile) => {
     // upload image to blockchain
+    const url = await uploadToIPFS(acceptedFile[0]);
+
+    console.log('url', url);
+
+    setFileUrl(url);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
@@ -47,7 +56,7 @@ const CreateNFT = () => {
                 </p>
 
                 <div className="my-12 w-full flex justify-center">
-                  <Image src={images.upload} width={100} height={100} objectFit="contain" alt="file-upload" className={theme === 'light' && 'filter invert'} />
+                  <Image src={images.upload} width={100} height={100} objectFit="contain" alt="file-upload" className={theme === 'light' ? 'filter invert' : ''} />
                 </div>
 
                 <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-sm">
@@ -73,7 +82,7 @@ const CreateNFT = () => {
         <Input inputType="number" title="Price" placeholder="NFT Price" handleClick={(e) => setFormInput({ ...formInput, price: e.target.value })} />
 
         <div className="mt-7 w-full flex justify-end">
-          <Button btnName="Create NFT" classStyles="rounded-xl hover:scale-105 duration-300" handleClick={() => {}} />
+          <Button btnName="Create NFT" classStyles="rounded-xl hover:scale-105 duration-300" handleClick={() => createNFT(formInput, fileUrl, router)} />
         </div>
       </div>
 
