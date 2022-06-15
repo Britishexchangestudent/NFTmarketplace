@@ -1,9 +1,145 @@
-import React from 'react';
+/* eslint-disable no-unused-vars */
+/* eslint-disable import/no-unresolved */
+import React, { useContext, useEffect, useState } from 'react';
+import Image from 'next/image';
 
-const NFTDetails = () => (
-  <div>
-    <p>NFTDetails</p>
+import { useRouter } from 'next/router';
+import { NFTContext } from '../context/NFTContext';
+import { NFTCard, Loader, Button, Modal } from '../components';
+
+import images from '../assets';
+import { shortenAddress } from '../utils/shortenAddress';
+
+const PaymentBodyCmp = ({ nft, nftCurrency }) => (
+  <div className="flex flex-col">
+    <div className="flexBetween">
+      <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-base minlg:text-xl">Item</p>
+      <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-base minlg:text-xl">Subtotal</p>
+    </div>
+    <div className="flexBetweenStart my-5">
+      <div className="flex-1 flexStartCenter">
+        <div className="relative h-32 w-32">
+          <Image src={nft?.image} layout="fill" objectFit="cover" className="rounded-md" />
+        </div>
+        <div className="flexCenterStart flex-col ml-5">
+          <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-sm minlg:text-xl">{shortenAddress(nft?.seller)}</p>
+          <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-sm minlg:text-xl">{nft?.name}</p>
+        </div>
+
+      </div>
+      <div>
+        <p className="font-poppins dark:text-white text-nft-black-1 font-normal text-sm minlg:text-xl">{nft?.price} <span className="font-semibold">{nftCurrency}</span></p>
+      </div>
+
+    </div>
+    <div className="flexBetween mt-10">
+      <p className="font-poppins dark:text-white text-nft-black-1 font-normal text-base minlg:text-xl">Total</p>
+      <p className="font-poppins dark:text-white text-nft-black-1 font-normal text-sm minlg:text-xl">{nft?.price} <span className="font-semibold">{nftCurrency}</span></p>
+    </div>
   </div>
 );
+
+const NFTDetails = () => {
+  const [paymentModal, setPaymentModal] = useState(false);
+  const router = useRouter();
+  const { fetchMyNFTsOrListedNFTs, currentAccount, nftCurrency } = useContext(NFTContext);
+  const [nfts, setNfts] = useState({
+    image: '',
+    tokenId: '',
+    name: '',
+    owner: '',
+    price: '',
+    seller: '',
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    setNfts(router.query);
+    setIsLoading(false);
+    console.log('nfts', nfts?.image);
+  }, [router.isReady]);
+
+  if (isLoading) {
+    return (
+      <div className="flexStart min-h-screen">
+        <Loader />
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative flex justify-center md:flex-col min-h-screen">
+      <div className="relative flex-1 flexCenter sm:px-4 p-12 border-r md:border-r-0 md:border-b dark:border-nft-black-1 border-nft-gray-1">
+        <div className="relative w-557 minmd:w-2/3 minmd:h-2/3 sm:w-full sm:h-500 h-557">
+          {nfts?.image && <Image src={nfts?.image} objectFit="cover" className="rounded-xl shadow-lg" layout="fill" />}
+          <p>helklloo</p>
+        </div>
+      </div>
+
+      <div className="flex-1 justify-start sm:px-4 p-12 sm:pb-4">
+        <div className="flex flex-row sm:flex-col">
+          <h2 className="font-poppins dark:text-white text-nft-black-1 font-semibold text-2xl minlg:text-3xl pl-2">{nfts?.name}</h2>
+        </div>
+
+        <div className="mt-10 pl-2">
+          <p className="font-poppins dark:text-white text-nft-black-1 text-xs minlg:text-base font-normal">Creator</p>
+          <div className="flex flex-row items-center mt-3  hover:bg-nft-gray-1 dark:hover:bg-nft-black-1 w-fit p-2 cursor-pointer duration-300 rounded-lg">
+            <div className="relative w-12 h-12 minlg:w-20 minlg:h-20 mr-2">
+              <Image src={images.creator1} objectFit="cover" className="rounded-full" />
+            </div>
+            <p className="font-poppins dark:text-white text-nft-black-1 text-xs minlg:text-base font-semibold">{shortenAddress(nfts.seller)}</p>
+          </div>
+        </div>
+
+        <div className="mt-10 flex flex-col">
+          <div className="w-full border-b dark:border-nft-black-1 border-nft-gray-1 flex flex-row">
+            <p className="font-poppins dark:text-white text-nft-black-1 mb-2 pl-2 minlg:text-base font-semibold text-base">Details</p>
+          </div>
+          <div className="mt-3">
+            <p className="font-poppins dark:text-white text-nft-black-1 pl-2 font-normal text-base">
+              {nfts?.description}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-row sm:flex-col mt-10">
+          {currentAccount === nfts.seller.toLowerCase() ? (
+            <p className="font-poppins dark:text-white text-nft-black-1 pl-2 font-normal text-base border border-gray p-2">
+              You cannot buy your own NFT
+            </p>
+          ) : (
+            <Button btnName={`Buy for ${nfts.price} ${nftCurrency}`} classStyles="rounded-lg hover:scale-105 duration-300 active:scale-95 mr-5 sm:mr-0" handleClick={() => setPaymentModal(true)} />
+          )}
+        </div>
+      </div>
+
+      {paymentModal && (
+      <Modal
+        header="Check Out"
+        body={
+          <PaymentBodyCmp nft={nfts} nftCurrency={nftCurrency} />
+      }
+        footer={(
+          <div className="flex flex-row sm:flex-col">
+            <Button
+              btnName="Checkout"
+              classStyles="rounded-lg mr-5 sm:mr-0 sm:mb-2"
+              handleClick={() => {}}
+            />
+            <Button
+              btnName="Cancel"
+              classStyles="rounded-lg"
+              handleClick={() => setPaymentModal(false)}
+            />
+          </div>
+      )}
+        handleClick={() => setPaymentModal(false)}
+      />
+      )}
+    </div>
+  );
+};
 
 export default NFTDetails;
