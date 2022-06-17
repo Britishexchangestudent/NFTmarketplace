@@ -43,7 +43,7 @@ const NFTDetails = () => {
   const [paymentModal, setPaymentModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const router = useRouter();
-  const { fetchMyNFTsOrListedNFTs, currentAccount, nftCurrency, buyNFT } = useContext(NFTContext);
+  const { fetchMyNFTsOrListedNFTs, currentAccount, nftCurrency, buyNFT, isLoadingNFT } = useContext(NFTContext);
   const [nfts, setNfts] = useState({
     image: '',
     tokenId: '',
@@ -150,6 +150,19 @@ const NFTDetails = () => {
             />
           </div>
       )}
+        handleClick={() => setPaymentModal(false)}
+      />
+      )}
+      {isLoadingNFT && (
+      <Modal
+        header="Buying NFT ..."
+        body={(
+          <div className="flexCenter flex-col text-center">
+            <div className="relative h-52 w-52">
+              <Loader />
+            </div>
+          </div>
+        )}
         handleClick={() => setPaymentModal(false)}
       />
       )}
